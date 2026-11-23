@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>스톱워치</title>
+  <!-- Tailwind CSS CDN: 빌드 없이 바로 사용 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+
+  <!-- 카드: 어두운 배경 위에 조금 밝은 카드 -->
+  <main class="bg-slate-800 rounded-3xl shadow-2xl p-8 w-full max-w-sm text-center">
+    <h1 class="text-lg font-semibold text-slate-300 mb-6">스톱워치</h1>
+
+    <!-- 시간 표시: font-mono는 숫자 폭이 같은 글꼴, tabular-nums는 숫자가 바뀔 때 흔들리지 않게 함 -->
+    <p id="display" class="text-6xl font-mono font-bold text-white tabular-nums mb-8">00:00:00</p>
+
+    <div class="flex gap-3">
+      <button id="toggle"
+              class="flex-1 rounded-xl bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-semibold py-3 transition">
+        시작
+      </button>
+      <button id="reset"
+              class="flex-1 rounded-xl bg-slate-600 hover:bg-slate-500 active:bg-slate-700 text-white font-semibold py-3 transition">
+        리셋
+      </button>
+    </div>
+  </main>
+
+  <script>
+    // ── 요소 찾아오기 ──
+    const display = document.getElementById('display');
+    const toggleBtn = document.getElementById('toggle');
+    const resetBtn = document.getElementById('reset');
+
+    // ── 상태(state) ──
+    let elapsed = 0;    // 멈춰 있던 동안 쌓인 시간 (밀리초, 1초 = 1000)
+    let startTime = 0;  // 이번 구간을 시작한 실제 시각 (Date.now() 값)
+    let timerId = null; // 화면을 주기적으로 갱신하는 타이머 번호. null이면 멈춘 상태
+
+    // ── 밀리초 → "HH:MM:SS" 문자열로 변환 ──
+    function format(ms) {
+      const totalSeconds = Math.floor(ms / 1000); // 소수점 버림
+      const hh = Math.floor(totalSeconds / 3600);
+      const mm = Math.floor((totalSeconds % 3600) / 60);
+      const ss = totalSeconds % 60;
+      // padStart(2, '0'): 한 자리 수 앞에 0을 붙여 항상 두 자리로 (예: 5 → "05")
+      return [hh, mm, ss].map(n => String(n).padStart(2, '0')).join(':');
+    }
+
+    // ── 현재까지 흐른 전체 시간 계산 ──
+    // 중요: 1초마다 1씩 더하는 방식 대신 "실제 시계"를 기준으로 계산합니다.
+    // setInterval은 정확한 간격을 보장하지 않아서, 세는 방식은 시간이 점점 어긋나기 때문입니다.
+    function getTotalMs() {
+      if (timerId === null) return elapsed;               // 멈춤: 저장된 값 그대로
+      return elapsed + (Date.now() - startTime);          // 달리는 중: 저장값 + 이번 구간 경과 시간
+    }
+
+    // ── 화면 그리기 ──
+    function render() {
+      display.textContent = format(getTotalMs());
+    }
+
+    // ── 시작 ──
+    function start() {
+      startTime = Date.now();                 // 지금 이 순간을 출발점으로 기록
+      timerId = setInterval(render, 100);     // 0.1초마다 화면 갱신 (초가 바뀌는 순간을 놓치지 않도록)
+      toggleBtn.textContent = '일시정지';
+    }
+
+    // ── 일시정지 ──
+    function pause() {
+      elapsed += Date.now() - startTime;      // 이번 구간에 흐른 시간을 누적
+      clearInterval(timerId);                 // 갱신 타이머 중지
+      timerId = null;                         // "멈춘 상태"임을 표시
+      toggleBtn.textContent = '시작';
+      render();
+    }
+
+    // ── 리셋 ──
+    function reset() {
+      clearInterval(timerId);                 // 달리고 있었다면 먼저 멈춤
+      timerId = null;
+      elapsed = 0;                            // 누적 시간 초기화
+      toggleBtn.textContent = '시작';
+      render();
+    }
+
+    // ── 버튼 연결 ──
+    // timerId가 null이면 멈춘 상태 → 시작, 아니면 달리는 중 → 일시정지
+    toggleBtn.addEventListener('click', () => {
+      if (timerId === null) {
+        start();
+      } else {
+        pause();
+      }
+    });
+
+    resetBtn.addEventListener('click', reset);
+  </script>
+</body>
+</html>

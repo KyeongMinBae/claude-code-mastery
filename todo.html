@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>할 일 목록</title>
+  <!-- Tailwind CSS CDN: 빌드 없이 바로 사용 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-100 flex items-center justify-center p-4">
+
+  <!-- 카드: 흰색 배경, 둥근 모서리, 그림자로 떠 있는 느낌 -->
+  <main class="bg-white rounded-2xl shadow-lg p-6 w-full max-w-md">
+    <h1 class="text-xl font-semibold text-slate-700 mb-4">할 일 목록</h1>
+
+    <!-- 입력 폼: 버튼을 누르거나 Enter를 치면 submit 이벤트가 발생 -->
+    <form id="todo-form" class="flex gap-2 mb-4">
+      <input id="todo-input" type="text" placeholder="할 일을 입력하세요"
+             class="flex-1 rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+      <button type="submit"
+              class="rounded-lg bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-semibold px-4 py-2 transition">
+        추가
+      </button>
+    </form>
+
+    <!-- 할 일 목록: 항목은 자바스크립트가 만들어서 넣음 -->
+    <ul id="todo-list" class="space-y-2"></ul>
+
+    <!-- 목록이 비었을 때 보여줄 안내 문구 -->
+    <p id="empty-msg" class="text-center text-slate-400 py-6">할 일이 없습니다. 새로 추가해 보세요!</p>
+
+    <p id="summary" class="mt-4 text-sm text-slate-500"></p>
+  </main>
+
+  <script>
+    // ── 요소 찾아오기 ──
+    const form = document.getElementById('todo-form');
+    const input = document.getElementById('todo-input');
+    const list = document.getElementById('todo-list');
+    const emptyMsg = document.getElementById('empty-msg');
+    const summary = document.getElementById('summary');
+
+    // ── 상태(state): 할 일 데이터의 유일한 원본 ──
+    // 각 항목은 { id, text, done } 형태의 객체
+    // id는 항목을 구별하기 위한 고유 번호 (삭제/체크 시 어떤 항목인지 찾는 용도)
+    let todos = [];
+    let nextId = 1;
+
+    // ── 화면 그리기: 상태가 바뀔 때마다 호출해서 화면을 최신으로 맞춤 ──
+    function render() {
+      list.replaceChildren(); // 기존 항목을 모두 지우고 (중복 방지)
+      todos.forEach(todo => list.appendChild(createTodoItem(todo)));
+
+      // 할 일이 하나라도 있으면 안내 문구 숨기기
+      emptyMsg.classList.toggle('hidden', todos.length > 0);
+
+      const remaining = todos.filter(t => !t.done).length;
+      summary.textContent = `남은 할 일: ${remaining}개 / 전체 ${todos.length}개`;
+    }
+
+    // ── 할 일 한 줄(li)을 만드는 함수 ──
+    // innerHTML 대신 createElement를 쓰는 이유: 사용자가 입력한 글자가
+    // HTML 코드로 해석되는 것을 막기 위해서 (보안)
+    function createTodoItem(todo) {
+      const li = document.createElement('li');
+      li.className = 'flex items-center gap-3 rounded-lg border border-slate-200 px-3 py-2';
+
+      // 체크박스
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = todo.done;
+      checkbox.className = 'h-5 w-5 accent-blue-500';
+      checkbox.addEventListener('change', () => toggleTodo(todo.id));
+
+      // 할 일 내용 (완료되면 줄 긋기 + 연한 색)
+      const text = document.createElement('span');
+      text.textContent = todo.text;
+      text.className = todo.done
+        ? 'flex-1 break-all line-through text-slate-400'
+        : 'flex-1 break-all text-slate-700';
+
+      // 삭제 버튼
+      const deleteBtn = document.createElement('button');
+      deleteBtn.type = 'button';
+      deleteBtn.textContent = '삭제';
+      deleteBtn.className = 'text-sm text-red-500 hover:text-red-700';
+      deleteBtn.addEventListener('click', () => deleteTodo(todo.id));
+
+      li.append(checkbox, text, deleteBtn);
+      return li;
+    }
+
+    // ── 상태를 바꾸는 함수들: 바꾼 뒤에는 반드시 render() 호출 ──
+    function addTodo(text) {
+      todos.push({ id: nextId++, text, done: false }); // nextId++는 값을 쓴 뒤 1 증가
+      render();
+    }
+
+    function toggleTodo(id) {
+      const todo = todos.find(t => t.id === id); // id가 같은 항목 찾기
+      todo.done = !todo.done;                    // true ↔ false 뒤집기
+      render();
+    }
+
+    function deleteTodo(id) {
+      todos = todos.filter(t => t.id !== id);    // id가 다른 것만 남기기
+      render();
+    }
+
+    // ── 폼 제출 이벤트: 추가 버튼 또는 Enter 키 ──
+    form.addEventListener('submit', event => {
+      event.preventDefault();          // 폼 기본 동작(페이지 새로고침) 막기
+      const text = input.value.trim(); // 앞뒤 공백 제거
+      if (text === '') return;         // 빈 입력은 무시
+
+      addTodo(text);
+      input.value = '';                // 입력창 비우기
+      input.focus();                   // 다음 입력을 위해 커서 유지
+    });
+
+    // 처음 화면 그리기 (목록이 비어 있으므로 안내 문구가 보임)
+    render();
+  </script>
+</body>
+</html>

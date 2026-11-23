@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>카운터 앱</title>
+  <!-- Tailwind CSS CDN: 빌드 단계 없이 바로 사용 (프로토타입/정적 페이지에 적합) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-100 flex items-center justify-center p-4">
+
+  <main class="bg-white rounded-2xl shadow-lg p-8 w-full max-w-sm text-center">
+    <h1 class="text-xl font-semibold text-slate-700 mb-6">카운터</h1>
+
+    <!-- 현재 카운트 표시 -->
+    <output id="count" class="block text-7xl font-bold text-blue-700 tabular-nums mb-8">0</output>
+
+    <!-- 버튼 그룹 -->
+    <div class="flex gap-3">
+      <button id="decrement"
+              class="flex-1 rounded-lg bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-semibold py-3 transition">
+        -1
+      </button>
+      <button id="reset"
+              class="flex-1 rounded-lg bg-blue-200 hover:bg-blue-300 active:bg-blue-400 text-blue-900 font-semibold py-3 transition">
+        리셋
+      </button>
+      <button id="increment"
+              class="flex-1 rounded-lg bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-semibold py-3 transition">
+        +1
+      </button>
+    </div>
+  </main>
+
+  <script>
+    // 상태(state)는 변수 하나로만 관리하고, 화면은 render()로 매번 동기화한다.
+    // DOM을 직접 조작하는 곳을 한 군데로 모아 상태와 화면이 어긋나는 것을 막기 위함.
+    const countEl = document.getElementById('count');
+    let count = 0;
+
+    // 상태 → 화면 동기화
+    function render() {
+      countEl.textContent = count;
+    }
+
+    // 상태 변경 함수들 (이벤트 핸들러는 이 함수만 호출)
+    function increment() { count += 1; render(); }
+    function decrement() { count -= 1; render(); }
+    function reset()     { count = 0;  render(); }
+
+    // 이벤트 위임 대신 버튼별 직접 연결: 버튼 3개뿐이라 단순하고 읽기 쉬움
+    document.getElementById('increment').addEventListener('click', increment);
+    document.getElementById('decrement').addEventListener('click', decrement);
+    document.getElementById('reset').addEventListener('click', reset);
+
+    render();
+  </script>
+</body>
+</html>

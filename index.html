@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ko" class="no-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[이름] | 개발자 이력서</title>
+    <meta name="description" content="[이름]의 개발자 웹 이력서 - 기술 스택, 경력, 프로젝트, 연락처">
+    <meta property="og:title" content="[이름] | 개발자 이력서">
+    <meta property="og:description" content="[이름]의 개발자 웹 이력서 - 기술 스택, 경력, 프로젝트, 연락처">
+    <meta property="og:type" content="website">
+
+    <!-- 다크 모드 초기화: 페이지가 그려지기 전에 실행해 깜빡임을 막음 -->
+    <script>
+        (function () {
+            document.documentElement.classList.remove('no-js');
+            document.documentElement.classList.add('js');
+            var saved = localStorage.getItem('theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+
+    <!-- 한글 웹폰트 (Pretendard) -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+
+    <!-- Tailwind CSS (CDN, 추후 CLI 빌드로 전환 가능) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // 다크 모드를 html 요소의 class="dark"로 제어
+        tailwind.config = { darkMode: 'class' };
+    </script>
+
+    <!-- 커스텀 스타일: 디자인 토큰 + Tailwind로 표현하기 어려운 컴포넌트 -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="min-h-screen antialiased">
+
+    <!-- ================= 헤더 ================= -->
+    <header class="glass-header sticky top-0 z-50">
+        <nav class="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between" aria-label="주요 메뉴">
+            <a href="#hero" class="font-bold text-lg tracking-tight">[이름]<span class="text-accent">.</span></a>
+
+            <!-- 데스크톱 메뉴 -->
+            <ul class="hidden md:flex items-center gap-7">
+                <li><a href="#about" class="nav-link">소개</a></li>
+                <li><a href="#skills" class="nav-link">기술</a></li>
+                <li><a href="#experience" class="nav-link">경력</a></li>
+                <li><a href="#projects" class="nav-link">프로젝트</a></li>
+                <li><a href="#sns" class="nav-link">SNS</a></li>
+                <li><a href="#contact" class="nav-link">연락처</a></li>
+            </ul>
+
+            <div class="flex items-center gap-2">
+                <!-- 다크 모드 토글 -->
+                <button id="theme-toggle" type="button"
+                        class="w-10 h-10 inline-flex items-center justify-center rounded-full border border-line hover:border-accent transition"
+                        aria-label="다크 모드 전환">
+                    <span class="dark:hidden" aria-hidden="true">🌙</span>
+                    <span class="hidden dark:inline" aria-hidden="true">☀️</span>
+                </button>
+
+                <!-- 모바일 메뉴 버튼 -->
+                <button id="menu-toggle" type="button"
+                        class="md:hidden w-10 h-10 inline-flex items-center justify-center rounded-full border border-line hover:border-accent transition"
+                        aria-controls="mobile-menu" aria-expanded="false" aria-label="메뉴 열기">
+                    ☰
+                </button>
+            </div>
+        </nav>
+
+        <!-- 모바일 메뉴 패널 -->
+        <ul id="mobile-menu" class="hidden md:hidden border-t border-line bg-surface px-6 py-3">
+            <li><a href="#about" class="nav-link block py-2.5">소개</a></li>
+            <li><a href="#skills" class="nav-link block py-2.5">기술</a></li>
+            <li><a href="#experience" class="nav-link block py-2.5">경력</a></li>
+            <li><a href="#projects" class="nav-link block py-2.5">프로젝트</a></li>
+            <li><a href="#sns" class="nav-link block py-2.5">SNS</a></li>
+            <li><a href="#contact" class="nav-link block py-2.5">연락처</a></li>
+        </ul>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-6">
+
+        <!-- ================= 히어로 ================= -->
+        <section id="hero" class="fade-in pt-16 pb-20 md:pt-24 md:pb-28">
+            <div class="grid md:grid-cols-2 items-center gap-12">
+                <div class="order-2 md:order-1">
+                    <p class="eyebrow mb-5">안녕하세요</p>
+                    <p class="text-2xl text-muted mb-1">저는 [이름]입니다</p>
+                    <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight mb-5">
+                        [직무]<span class="text-accent">.</span>
+                    </h1>
+                    <p class="text-muted max-w-md mb-8">
+                        [한 줄 소개: 사용자 경험을 중요하게 생각하며, 웹 표준과 접근성을 지키는 개발자입니다.]
+                    </p>
+                    <div class="flex flex-wrap gap-3">
+                        <a href="#contact" class="btn btn-primary">프로젝트 문의</a>
+                        <a href="#experience" class="btn btn-outline">경력 보기</a>
+                    </div>
+                </div>
+
+                <!-- 프로필 사진: 원형 링 + 글로우 (샘플 이미지, 추후 실제 사진으로 교체) -->
+                <div class="order-1 md:order-2 relative mx-auto w-64 h-64 sm:w-80 sm:h-80">
+                    <div class="hero-glow" aria-hidden="true"></div>
+                    <div class="hero-ring" aria-hidden="true"></div>
+                    <img src="https://picsum.photos/seed/profile/400/400" alt="[이름] 프로필 사진"
+                         width="400" height="400"
+                         class="absolute inset-[10%] w-[80%] h-[80%] rounded-full object-cover">
+                </div>
+            </div>
+        </section>
+
+        <!-- 기술 스트립 (화면 전체 폭 배경 띠) -->
+        <div class="relative left-1/2 -translate-x-1/2 w-screen border-y border-line bg-surface-2">
+        <ul class="max-w-3xl mx-auto px-6 py-6 flex flex-wrap justify-between gap-x-8 gap-y-3" aria-label="주요 기술">
+            <li class="tech-item">HTML5</li>
+            <li class="tech-item">CSS</li>
+            <li class="tech-item">Tailwind CSS</li>
+            <li class="tech-item">JavaScript</li>
+            <li class="tech-item">Git</li>
+            <li class="tech-item">GitHub</li>
+        </ul>
+        </div>
+
+        <div class="py-24 space-y-28">
+
+        <!-- ================= 소개 ================= -->
+        <section id="about" class="fade-in grid md:grid-cols-2 gap-14" aria-labelledby="about-title">
+            <!-- 제공 서비스 (타임라인) -->
+            <div>
+                <p class="eyebrow mb-4">What I do</p>
+                <ul class="timeline mt-8">
+                    <li class="timeline-item">
+                        <h3 class="font-semibold text-lg mb-1">웹 개발</h3>
+                        <p class="text-muted text-sm">반응형 웹 페이지와 인터랙티브 UI를 설계하고 구현합니다.</p>
+                    </li>
+                    <li class="timeline-item">
+                        <h3 class="font-semibold text-lg mb-1">UI 컴포넌트</h3>
+                        <p class="text-muted text-sm">재사용 가능한 컴포넌트와 디자인 시스템을 구성합니다.</p>
+                    </li>
+                    <li class="timeline-item">
+                        <h3 class="font-semibold text-lg mb-1">배포 및 운영</h3>
+                        <p class="text-muted text-sm">GitHub Pages, Netlify, Vercel 등으로 배포하고 관리합니다.</p>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 자기소개 + 통계 -->
+            <div>
+                <p class="eyebrow mb-4">About me</p>
+                <h2 id="about-title" class="section-title mb-6">소개</h2>
+                <div class="space-y-4 text-muted leading-relaxed mb-10">
+                    <p>[자기소개: 개발을 시작한 계기와 현재 관심 있는 분야를 2~3문장으로 작성합니다.]</p>
+                    <p>[개발 관심 분야: 예) 반응형 웹, 인터랙션 UI, 웹 성능 최적화]</p>
+                </div>
+
+                <dl class="grid grid-cols-3 gap-6 border-t border-line pt-8">
+                    <div>
+                        <dt class="text-sm text-muted mb-2">완료한 프로젝트</dt>
+                        <dd class="stat-number">00<span class="unit">+</span></dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm text-muted mb-2">고객 만족도</dt>
+                        <dd class="stat-number">00<span class="unit">%</span></dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm text-muted mb-2">개발 경력</dt>
+                        <dd class="stat-number">00<span class="unit">+</span></dd>
+                    </div>
+                </dl>
+            </div>
+        </section>
+
+        <!-- ================= 기술 스택 ================= -->
+        <section id="skills" class="fade-in" aria-labelledby="skills-title">
+            <p class="eyebrow mb-4">Skills</p>
+            <h2 id="skills-title" class="section-title mb-8">기술 스택</h2>
+            <ul class="flex flex-wrap gap-3">
+                <li class="badge">HTML5</li>
+                <li class="badge">CSS</li>
+                <li class="badge">Tailwind CSS</li>
+                <li class="badge">JavaScript (ES6+)</li>
+                <li class="badge">Git / GitHub</li>
+                <li class="badge">[기타 기술]</li>
+            </ul>
+        </section>
+
+        <!-- ================= 경력 ================= -->
+        <section id="experience" class="fade-in" aria-labelledby="experience-title">
+            <p class="eyebrow mb-4">Experience</p>
+            <h2 id="experience-title" class="section-title mb-8">경력</h2>
+            <ul class="timeline">
+                <li class="timeline-item">
+                    <article class="card">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1 mb-3">
+                            <h3 class="text-lg font-semibold">[회사명] · [직무]</h3>
+                            <span class="text-sm text-muted">[YYYY.MM] ~ [YYYY.MM]</span>
+                        </div>
+                        <ul class="list-disc pl-5 space-y-1.5 text-muted">
+                            <li>[담당 업무 1: 예) 사내 관리 페이지 UI 개발 및 유지보수]</li>
+                            <li>[담당 업무 2: 예) 페이지 로딩 속도 30% 개선]</li>
+                        </ul>
+                    </article>
+                </li>
+            </ul>
+        </section>
+
+        <!-- ================= 프로젝트 ================= -->
+        <section id="projects" class="fade-in" aria-labelledby="projects-title">
+            <p class="eyebrow mb-4">Projects</p>
+            <h2 id="projects-title" class="section-title mb-8">프로젝트</h2>
+            <div class="grid gap-6 md:grid-cols-2">
+                <article class="card flex flex-col">
+                    <!-- 샘플 이미지: 추후 실제 프로젝트 썸네일로 교체 -->
+                    <img src="https://picsum.photos/seed/project1/640/360" alt="[프로젝트명 1] 대표 이미지"
+                         width="640" height="360" loading="lazy"
+                         class="w-full aspect-video object-cover rounded-xl mb-6">
+                    <h3 class="text-lg font-semibold mb-2">[프로젝트명 1]</h3>
+                    <p class="text-muted text-sm mb-4 flex-1">[프로젝트 설명: 주요 기능과 본인의 역할을 작성합니다.]</p>
+                    <div class="flex flex-wrap gap-2 mb-5">
+                        <span class="tag">HTML</span>
+                        <span class="tag">Tailwind CSS</span>
+                        <span class="tag">JavaScript</span>
+                    </div>
+                    <div class="flex gap-5 text-sm font-medium">
+                        <a href="https://github.com/[사용자명]/[저장소명]" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">GitHub</a>
+                        <a href="https://[데모주소]" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">데모 보기</a>
+                    </div>
+                </article>
+
+                <article class="card flex flex-col">
+                    <!-- 샘플 이미지: 추후 실제 프로젝트 썸네일로 교체 -->
+                    <img src="https://picsum.photos/seed/project2/640/360" alt="[프로젝트명 2] 대표 이미지"
+                         width="640" height="360" loading="lazy"
+                         class="w-full aspect-video object-cover rounded-xl mb-6">
+                    <h3 class="text-lg font-semibold mb-2">[프로젝트명 2]</h3>
+                    <p class="text-muted text-sm mb-4 flex-1">[프로젝트 설명: 주요 기능과 본인의 역할을 작성합니다.]</p>
+                    <div class="flex flex-wrap gap-2 mb-5">
+                        <span class="tag">[기술 스택]</span>
+                    </div>
+                    <div class="flex gap-5 text-sm font-medium">
+                        <a href="https://github.com/[사용자명]/[저장소명]" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">GitHub</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- ================= 학력 / 자격증 ================= -->
+        <section id="education" class="fade-in" aria-labelledby="education-title">
+            <p class="eyebrow mb-4">Education</p>
+            <h2 id="education-title" class="section-title mb-8">학력 / 자격증</h2>
+            <div class="grid gap-6 md:grid-cols-2">
+                <article class="card">
+                    <h3 class="text-lg font-semibold mb-1">[학교명]</h3>
+                    <p class="text-muted text-sm">[전공] · [YYYY.MM] ~ [YYYY.MM]</p>
+                </article>
+                <article class="card">
+                    <h3 class="text-lg font-semibold mb-1">자격증</h3>
+                    <ul class="list-disc pl-5 text-muted text-sm space-y-1">
+                        <li>[자격증명] ([취득일])</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <!-- ================= SNS ================= -->
+        <section id="sns" class="fade-in" aria-labelledby="sns-title">
+            <p class="eyebrow mb-4">Social</p>
+            <h2 id="sns-title" class="section-title mb-8">SNS</h2>
+
+            <ul class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                <!-- GitHub -->
+                <li>
+                    <a href="https://github.com/[사용자명]" target="_blank" rel="noopener noreferrer" class="sns-card">
+                        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.27-1.68-1.27-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.18-3.08-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.58.23 2.75.11 3.04.74.8 1.18 1.83 1.18 3.08 0 4.41-2.690 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/>
+                        </svg>
+                        <span class="text-sm font-medium">GitHub</span>
+                    </a>
+                </li>
+
+                <!-- YouTube -->
+                <li>
+                    <a href="https://www.youtube.com/@[채널명]" target="_blank" rel="noopener noreferrer" class="sns-card">
+                        <svg class="w-8 h-8 text-red-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.2 3.6-6.2 3.6z"/>
+                        </svg>
+                        <span class="text-sm font-medium">YouTube</span>
+                    </a>
+                </li>
+
+                <!-- Instagram -->
+                <li>
+                    <a href="https://www.instagram.com/[사용자명]" target="_blank" rel="noopener noreferrer" class="sns-card">
+                        <svg class="w-8 h-8 text-pink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                            <circle cx="12" cy="12" r="4"/>
+                            <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/>
+                        </svg>
+                        <span class="text-sm font-medium">Instagram</span>
+                    </a>
+                </li>
+
+                <!-- LinkedIn -->
+                <li>
+                    <a href="https://www.linkedin.com/in/[사용자명]" target="_blank" rel="noopener noreferrer" class="sns-card">
+                        <svg class="w-8 h-8 text-blue-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/>
+                        </svg>
+                        <span class="text-sm font-medium">LinkedIn</span>
+                    </a>
+                </li>
+
+                <!-- Blog -->
+                <li>
+                    <a href="https://[블로그주소]" target="_blank" rel="noopener noreferrer" class="sns-card">
+                        <svg class="w-8 h-8 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <rect x="4" y="4" width="16" height="16" rx="2"/>
+                            <path d="M8 9h8M8 13h8M8 17h5"/>
+                        </svg>
+                        <span class="text-sm font-medium">Blog</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <!-- ================= 연락처 ================= -->
+        <section id="contact" class="fade-in" aria-labelledby="contact-title">
+            <div class="card text-center py-12 px-6">
+                <p class="eyebrow mb-4 justify-center">Contact</p>
+                <h2 id="contact-title" class="section-title mb-4">함께 일하고 싶다면 연락 주세요</h2>
+                <p class="text-muted mb-8">새로운 프로젝트나 협업 제안은 언제든 환영합니다.</p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <a href="mailto:[이메일]" class="btn btn-primary">[이메일]</a>
+                    <button id="copy-email" type="button" data-email="[이메일]" class="btn btn-outline">
+                        이메일 복사
+                    </button>
+                </div>
+            </div>
+        </section>
+        </div>
+    </main>
+
+    <footer class="border-t border-line mt-28">
+        <div class="max-w-3xl mx-auto px-6 py-8 text-center text-sm text-muted">
+            &copy; <span id="year">2026</span> [이름]. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="js/main.js" defer></script>
+</body>
+</html>
